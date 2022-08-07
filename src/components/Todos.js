@@ -1,7 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { addTodos, removeTodos, updateTodos, completeTodos } from "../redux/reducer";
-
+import { addTodos } from "../redux/reducer";
+import { GoPlus } from "react-icons/go";
 const mapStateToProps = (state) => {
   return {
     todos: state,
@@ -11,9 +11,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     addTodo: (obj) => dispatch(addTodos(obj)),
-    removeTodo: (id) => dispatch(removeTodos(id)),
-    updateTodo: (obj) => dispatch(updateTodos(obj)),
-    completeTodo: (id) => dispatch(completeTodos(id)),
   };
 };
 
@@ -22,20 +19,6 @@ const Todos = (props) => {
 
   const handleChange = (e) => {
     setTodo(e.target.value);
-  };
-
-  let inputRef = useRef(true);
-
-  const changeFocus = () => {
-    inputRef.current.disabled = false;
-    inputRef.current.focus();
-  };
-
-  const update = (id, value, e) => {
-    if (e.which === 13) {
-      props.updateTodo({ id, item: value });
-      inputRef.current.disabled = true;
-    }
   };
 
   const add = () => {
@@ -51,7 +34,7 @@ const Todos = (props) => {
     }
   };
 
-  console.log("props from store", props);
+  //console.log("props from store", props);
 
   return (
     <div className="addTodos">
@@ -61,32 +44,15 @@ const Todos = (props) => {
         className="todo-input"
         value={todo}
       />
-      <button className="add-btn" onClick={() => add()}>
-        {" "}
-        Add
+      <button
+        className="add-btn"
+        onClick={() => add()}
+      >
+        <GoPlus />
       </button>
-
       <br />
-
-      <ui>
-        {props.todos.map((item) => {
-          return (
-            <li key={item.id}>
-              <textarea
-                ref={inputRef}
-                disabled={inputRef}
-                defaultValue={item.item}
-                onKeyPress={(e) => update(item.id, inputRef.current.value, e)}
-              />
-              <button onClick={() => changeFocus()}> Edit </button>
-              <button onClick={() => props.completeTodo(item.id)}>Complete</button>
-              <button onClick={() => props.removeTodo(item.id)}>Delete</button>
-            </li>
-          );
-        })}
-      </ui>
     </div>
   );
 };
-
+//we can use connect method to connect this component with redux store
 export default connect(mapStateToProps, mapDispatchToProps)(Todos);
